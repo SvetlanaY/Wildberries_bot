@@ -1,21 +1,16 @@
-import scrapy
-from ..items import WildberriesItem
-from scrapy.http import JsonRequest
 import json
 
+import scrapy
+from scrapy.http import JsonRequest
 
+from ..items import WildberriesItem
 
 
 class WildberriesSpider(scrapy.Spider):
     name = 'wildberries'
     allowed_domains = ['wildberries.ru']
-
-    #проверить входящую ссылку! меняется номер
-   # start_urls = ['https://www.wildberries.ru/catalog/10777032/otzyvy'] 
-   # start_urls = final_linc 
-    
-    count_comment = 10000
-    
+   
+    count_comment = 5000    
       
     def parse(self, response):       
         id_api = int(response.css('div::attr(data-good-link)').get())
@@ -45,17 +40,4 @@ class WildberriesSpider(scrapy.Spider):
                 pass
             
         yield result
-
         
-
-        
-        # Если сайт отдает html то так:
-        # xpath можно узнать в панели отладки хрома (правой кнопкой мышки на элементе), например:
-     #   xpath_name = '//*[@id="global"]/div/table/tbody/tr/td[%(col)s]/table/tbody/tr/td/a/text()'
-     #   hxs = HtmlXPathSelector(response)
-     #   column = 100500
-      #  data_from_html = hxs.select(xpath_name % {'col': column}).extract()
-       # yield data_from_json['feedbacks'][0]
-      # yield result
-           
-

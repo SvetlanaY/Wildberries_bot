@@ -1,30 +1,29 @@
-import os
 import logging
+import os
 import re
-
-from aiogram import Bot,Dispatcher,executor,types
-import requests
-
-from static_text import HELLO_TEXT, NOT_TARGET_CONTENT_TYPES
-from static_text import  NOT_TARGET_TEXT,WAITING_TEXT,NOT_TARGET_TEXT_LINK
 from parser import parser
 
+import requests
+from aiogram import Bot, Dispatcher, executor, types
+
+from static_text import (HELLO_TEXT, NOT_TARGET_CONTENT_TYPES, NOT_TARGET_TEXT,
+                         NOT_TARGET_TEXT_LINK, WAITING_TEXT)
+
 # Comfigure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level = logging.INFO)
 
 # Make sure that you got telegram api token from BotFather
 # перенести в энв!!!
 
-TOKEN = '1740386855:AAHgxBqSAaCalAOh0j1K0Afhd1hsi-4qrqc'
-#TOKEN = os.getenv('TOKEN_API_DS_BOT')
 
+TOKEN = os.getenv('TOKEN_API_DS_BOT')
 
 # Initialize bot and dispetcher
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
 #Base command messages for start and exceptions(not target content inputs)
-@dp.message_handler(commands=['start'])
+@dp.message_handler(commands = ['start'])
 async def send_welcome(message: types.Message):
     user_name = message.from_user.first_name
     user_id = message.from_user.id
@@ -32,7 +31,7 @@ async def send_welcome(message: types.Message):
     logging.info(f'first start from user_name = {user_name}, user_id = {user_id}')
     await message.reply(text)
 
-@dp.message_handler(content_types=NOT_TARGET_CONTENT_TYPES)
+@dp.message_handler(content_types = NOT_TARGET_CONTENT_TYPES)
 async def handle_docs_photo(message):
     user_name = message.from_user.first_name
     text = NOT_TARGET_TEXT %user_name
@@ -42,26 +41,19 @@ async def handle_docs_photo(message):
 async def handle_photo_for_prediction(message):
   #  url = 'http://api:8000/api/photo'
     chat_id = message.chat.id
-    # Check for 'single photo - single message'
-    # None media_group_id - means single photo at message
     text_link = message.text
     text_template = r'wildberries\.ru\/catalog\/\d*'
     result = re.findall(text_template, text_link)
 
-    if len(result) != 1:
-            user_name = message.from_user.first_name
-            text = NOT_TARGET_TEXT_LINK %user_name
-            await message.reply(text)
-    else: final_link = f'https://www.{result[0]}/otzyvy'
+    if len(result) == 1:       
+        final_link = []
+        final_link.append(f'https://www.{result[0]}/otzyvy')
   
-
- #  if message.text[:35]=='https://www.wildberries.ru/catalog/' and message.text[-12:]=='/detail.aspx':
-        # check links on valid
-    if requests.get(final_link).status_code != 200:
+        if requests.get(''.join(final_link)).status_code != 200:
             user_name = message.from_user.first_name
             text = NOT_TARGET_TEXT_LINK %user_name
             await message.reply(text)
-    else:    
+        else:    
             user_name = message.from_user.first_name
             user_id = message.from_user.id
             message_id = message.message_id
@@ -69,7 +61,7 @@ async def handle_photo_for_prediction(message):
             logging.info(f'{user_name, user_id} is knocking to our bot')
             await bot.send_message(chat_id, text)
             parser(final_link)
-            # обнулять файл , папка инпут, модель
+            #  модель
 
 
         # Define input photo local path
@@ -81,7 +73,10 @@ async def handle_photo_for_prediction(message):
 
      #   await bot.send_message(chat_id,dog_prob)
 
-    
+    else:
+        user_name = message.from_user.first_name
+        text = NOT_TARGET_TEXT_LINK %user_name
+        await message.reply(text)
     
 
 
