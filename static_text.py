@@ -10,3 +10,5 @@ NOT_TARGET_CONTENT_TYPES = [
 ]
 
 WAITING_TEXT= 'Pleese, wait,%s !'
+
+FINAL_TEXT = 'Всё готово, проверяй полученные данные, %s'
