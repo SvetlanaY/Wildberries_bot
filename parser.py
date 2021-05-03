@@ -14,7 +14,7 @@ def parser(final_link, file_name):
     },
     },
     )
-        crawler.crawl(WildberriesSpider,start_urls = final_link)
+        crawler.crawl(WildberriesSpider,start_urls = [final_link])
         crawler.start()
 
     process = Process(target=crawl)
