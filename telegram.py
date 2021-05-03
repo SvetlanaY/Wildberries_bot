@@ -18,6 +18,7 @@ logging.basicConfig(level = logging.INFO)
 TOKEN = '1740386855:AAHgxBqSAaCalAOh0j1K0Afhd1hsi-4qrqc'
 #TOKEN = os.getenv('TOKEN_API_DS_BOT')
 
+
 # Initialize bot and dispetcher
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
@@ -46,8 +47,8 @@ async def handle_photo_for_prediction(message):
     result = re.findall(text_template, text_link)
 
     if len(result) == 1:
-        final_link = []
-        final_link.append(f'https://www.{result[0]}/otzyvy')
+        #final_link = []
+        final_link = f'https://www.{result[0]}/otzyvy'
 
         if requests.get(''.join(final_link)).status_code != 200:
             user_name = message.from_user.first_name
