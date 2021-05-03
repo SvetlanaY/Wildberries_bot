@@ -7,14 +7,13 @@ import requests
 from aiogram import Bot, Dispatcher, executor, types
 
 from static_text import (HELLO_TEXT, NOT_TARGET_CONTENT_TYPES, NOT_TARGET_TEXT,
-                         NOT_TARGET_TEXT_LINK, WAITING_TEXT)
+                         NOT_TARGET_TEXT_LINK, WAITING_TEXT, FINAL_TEXT)
 
 # Comfigure logging
 logging.basicConfig(level = logging.INFO)
 
 # Make sure that you got telegram api token from BotFather
 # перенести в энв!!!
-
 
 TOKEN = os.getenv('TOKEN_API_DS_BOT')
 
@@ -45,22 +44,28 @@ async def handle_photo_for_prediction(message):
     text_template = r'wildberries\.ru\/catalog\/\d*'
     result = re.findall(text_template, text_link)
 
-    if len(result) == 1:       
+    if len(result) == 1:
         final_link = []
         final_link.append(f'https://www.{result[0]}/otzyvy')
-  
+
         if requests.get(''.join(final_link)).status_code != 200:
             user_name = message.from_user.first_name
             text = NOT_TARGET_TEXT_LINK %user_name
             await message.reply(text)
-        else:    
+        else:
             user_name = message.from_user.first_name
             user_id = message.from_user.id
             message_id = message.message_id
             text = WAITING_TEXT %user_name
             logging.info(f'{user_name, user_id} is knocking to our bot')
             await bot.send_message(chat_id, text)
-            parser(final_link)
+            #sku из html кода
+            sku_html = final_link[35:-7]
+            file_name = f'./input/file_{sku_html}_{user_id}_{message_id}.jl'
+
+            parser(final_link, file_name)
+            text = FINAL_TEXT %user_name
+            await bot.send_message(chat_id, text)
             #  модель
 
 
@@ -69,7 +74,7 @@ async def handle_photo_for_prediction(message):
     #    photo = await message.photo[-1].download(photo_name)  # extract photo for further procceses
      #   with open(photo_name, 'rb') as f:
     #        res = requests.post(url, files={'photo': f})
-     #       dog_prob = res.json()        
+     #       dog_prob = res.json()
 
      #   await bot.send_message(chat_id,dog_prob)
 
@@ -77,7 +82,7 @@ async def handle_photo_for_prediction(message):
         user_name = message.from_user.first_name
         text = NOT_TARGET_TEXT_LINK %user_name
         await message.reply(text)
-    
+
 
 
 if __name__ == '__main__':
