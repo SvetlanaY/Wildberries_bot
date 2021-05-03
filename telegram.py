@@ -15,8 +15,8 @@ logging.basicConfig(level = logging.INFO)
 # Make sure that you got telegram api token from BotFather
 # перенести в энв!!!
 
-
-TOKEN = os.getenv('TOKEN_API_DS_BOT')
+TOKEN = '1740386855:AAHgxBqSAaCalAOh0j1K0Afhd1hsi-4qrqc'
+#TOKEN = os.getenv('TOKEN_API_DS_BOT')
 
 # Initialize bot and dispetcher
 bot = Bot(token=TOKEN)
