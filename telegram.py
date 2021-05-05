@@ -2,7 +2,8 @@ import logging
 import os
 import re
 from parser import parser
-
+from model_base.model_base import word_cloud_output,tf_idf,similar_comments
+import spacy
 import requests
 from aiogram import Bot, Dispatcher, executor, types
 
@@ -22,7 +23,7 @@ TOKEN = '1740386855:AAHgxBqSAaCalAOh0j1K0Afhd1hsi-4qrqc'
 # Initialize bot and dispetcher
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
-
+nlp = spacy.load('ru_core_news_lg')
 #Base command messages for start and exceptions(not target content inputs)
 @dp.message_handler(commands = ['start'])
 async def send_welcome(message: types.Message):
@@ -45,9 +46,11 @@ async def handle_photo_for_prediction(message):
     text_link = message.text
     text_template = r'wildberries\.ru\/catalog\/\d*'
     result = re.findall(text_template, text_link)
+    
 
     if len(result) == 1:
         #final_link = []
+        
         final_link = f'https://www.{result[0]}/otzyvy'
 
         if requests.get(''.join(final_link)).status_code != 200:
@@ -64,10 +67,22 @@ async def handle_photo_for_prediction(message):
             #sku из html кода
             sku_html = final_link[35:-7]
             file_name = f'./input/file_{sku_html}_{user_id}_{message_id}.jl'
-
             parser(final_link, file_name)
             text = FINAL_TEXT %user_name
             await bot.send_message(chat_id, text)
+           
+            output_name=f'./output/plot_{file_name[8:-2]}jpg'
+            preprocessed_comments, df = word_cloud_output(file_name,output_name)           
+            await bot.send_photo(chat_id, photo=open(output_name,'rb'))
+
+            text = tf_idf(preprocessed_comments)
+            await bot.send_message(chat_id, text)
+            
+            
+   
+        
+           
+
             #  модель
 
 
@@ -81,9 +96,24 @@ async def handle_photo_for_prediction(message):
      #   await bot.send_message(chat_id,dog_prob)
 
     else:
-        user_name = message.from_user.first_name
-        text = NOT_TARGET_TEXT_LINK %user_name
-        await message.reply(text)
+        try:
+                print('ddd')
+                user_name = message.from_user.first_name
+                user_id = message.from_user.id                 
+                word = message.text.lower()
+                print(word)
+                 
+                text = similar_comments(word,file_name,nlp)
+                print(text)
+                await bot.send_message(chat_id, text)
+        except:
+                print('aaaaaaaaaa')
+                user_name = message.from_user.first_name
+                text = NOT_TARGET_TEXT_LINK %user_name
+                await message.reply(text)
+       
+          
+           
 
 
 
