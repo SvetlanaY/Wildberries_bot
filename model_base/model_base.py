@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import re
+import os
 
 import spacy
 from pymystem3 import Mystem
@@ -35,6 +36,9 @@ def get_df(file_name,user_id):
     df['lemma_comment'] = df['lemma_comment'].map(lambda x: clean_text(x,russian_stopwords))
     df = df.drop(df[df['lemma_comment']==''].index)
     df = df.reset_index(drop = True)
+    if os.path.isfile(f'./df/{user_id}.csv'):
+        os.remove(f'./df/{user_id}.csv')
+    
     df.to_csv(f'./df/{user_id}.csv',index=False)
 
       
