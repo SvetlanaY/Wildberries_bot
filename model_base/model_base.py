@@ -17,7 +17,7 @@ from model_base.clean_text import clean_text, lemmatize
 from model_base.word_cloud import plot_wordcloud
 
 
-def get_df(file_name):
+def get_df(file_name,user_id):
     columns = ['comment', 'date_time', 'color','size', 'thumb_up', 'thumb_down', 'prod_eval', 'prod', 'brand']
     df = pd.read_json(file_name).transpose().reset_index().drop('index', axis=1)
     df = df.set_axis(columns, axis = 'columns')
@@ -35,17 +35,18 @@ def get_df(file_name):
     df['lemma_comment'] = df['lemma_comment'].map(lambda x: clean_text(x,russian_stopwords))
     df = df.drop(df[df['lemma_comment']==''].index)
     df = df.reset_index(drop = True)
-    return df
+    df.to_csv(f'./df/{user_id}.csv',index=False)
 
       
 
-def word_cloud_output(file_name,output_name):
-    df = get_df(file_name)
+def word_cloud_output(file_name,output_name,user_id):
+    
+    df = pd.read_csv(f'./df/{user_id}.csv')
     preprocessed_comments = df['lemma_comment']
 
     plot_wordcloud(preprocessed_comments, title="Word Cloud of comments")
     plt.savefig(output_name)
-    return preprocessed_comments, df
+    return preprocessed_comments
     
 
 def tf_idf(preprocessed_comments):
@@ -64,16 +65,16 @@ def tf_idf(preprocessed_comments):
    except:
       return 'Мало комментариев'   
 
-def similar_comments(word,nlp,file_name):
-    df = get_df(file_name)
+def similar_comments(word,nlp,user_id):
+    df = pd.read_csv(f'./df/{user_id}.csv')
     
     critical_similarity_value = 0.47    
     word_for_checking = nlp(word)
     similarities = []
-    for i in range(len(dataframe['lemma_comment'])):
-        similarities.append(nlp(dataframe['lemma_comment'][i]).similarity(word_for_checking))
+    for i in range(len(df['lemma_comment'])):
+        similarities.append(nlp(df['lemma_comment'][i]).similarity(word_for_checking))
     
-    df_temp = dataframe.copy()
+    df_temp = df.copy()
     
     df_temp[f'similarity_to_{word_for_checking}'] = similarities
     #сортировка по убыванию similarities, фильтрация в соответствии с critical_similarity_value
