@@ -24,6 +24,8 @@ TOKEN = '1740386855:AAHgxBqSAaCalAOh0j1K0Afhd1hsi-4qrqc'
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 nlp = spacy.load('ru_core_news_lg')
+
+
 #Base command messages for start and exceptions(not target content inputs)
 @dp.message_handler(commands = ['start'])
 async def send_welcome(message: types.Message):
@@ -39,7 +41,8 @@ async def handle_docs_photo(message):
     text = NOT_TARGET_TEXT %user_name
     await message.reply(text)
 
-@dp.message_handler(content_types=['text'])
+
+@dp.message_handler(commands = ['sendlink'])
 async def handle_photo_for_prediction(message):
   #  url = 'http://api:8000/api/photo'
     chat_id = message.chat.id
@@ -67,6 +70,7 @@ async def handle_photo_for_prediction(message):
             #sku из html кода
             sku_html = final_link[35:-7]
             file_name = f'./input/file_{sku_html}_{user_id}_{message_id}.jl'
+            
             parser(final_link, file_name)
             text = FINAL_TEXT %user_name
             await bot.send_message(chat_id, text)
@@ -80,7 +84,44 @@ async def handle_photo_for_prediction(message):
             
             
    
+
+    else:
+                user_name = message.from_user.first_name
+                text = NOT_TARGET_TEXT_LINK %user_name
+                await message.reply(text)
+       
+
+
+@dp.message_handler(content_types=['text'])
+async def handle_photo_for_prediction(message):
+      
+                print('ddd')
+                user_name = message.from_user.first_name
+                user_id = message.from_user.id      
+                message_id = message.message_id          
+                word = message.text.lower()
+                print(word)
+                # число которое вычитаем заыисит от количества сообщений!!!!
+                path='./input'
+                files = os.listdir(path)
+                try:
+                    for i in files:
+                        if len(i)>10 and i[-6:-3] == str(message_id-5):
+                            file_name = i
+                            print(file_name)            
+  
+                    text = similar_comments(word,nlp,file_name)
+                    print(text)
+                    await bot.send_message(chat_id, text)
+                except:
+
+                   user_name = message.from_user.first_name
+                   text = NOT_TARGET_TEXT_LINK %user_name
+                   await message.reply(text)
+                
+   
         
+
            
 
             #  модель
@@ -95,22 +136,9 @@ async def handle_photo_for_prediction(message):
 
      #   await bot.send_message(chat_id,dog_prob)
 
-    else:
-        try:
-                print('ddd')
-                user_name = message.from_user.first_name
-                user_id = message.from_user.id                 
-                word = message.text.lower()
-                print(word)
-                 
-                text = similar_comments(word,file_name,nlp)
-                print(text)
-                await bot.send_message(chat_id, text)
-        except:
-                print('aaaaaaaaaa')
-                user_name = message.from_user.first_name
-                text = NOT_TARGET_TEXT_LINK %user_name
-                await message.reply(text)
+  
+                
+     
        
           
            

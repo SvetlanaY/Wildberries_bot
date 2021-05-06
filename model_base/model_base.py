@@ -64,11 +64,11 @@ def tf_idf(preprocessed_comments):
    except:
       return 'Мало комментариев'   
 
-def similar_comments(word,file_name,nlp):
+def similar_comments(word,nlp,file_name):
     df = get_df(file_name)
     
     critical_similarity_value = 0.47    
-    word_for_checking = nlp(word_for_checking)
+    word_for_checking = nlp(word)
     similarities = []
     for i in range(len(dataframe['lemma_comment'])):
         similarities.append(nlp(dataframe['lemma_comment'][i]).similarity(word_for_checking))
