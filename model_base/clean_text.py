@@ -76,13 +76,14 @@ def lemmatize(text):
     lemma = m.lemmatize(merged_text)
     for t in lemma:
         
-        if t != '|' and count+1<len(lemma):
+        if '|' not in t and count + 1 < len(lemma):
             doc.append(t)
-            count+=1
+            count += 1 
           
         else:
             doc = ''.join(i for i in doc)
             res.append(doc)
-            count+=1
+            count += 1
             doc = []
     return res
+

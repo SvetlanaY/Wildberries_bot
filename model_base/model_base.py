@@ -20,8 +20,18 @@ from model_base.word_cloud import plot_wordcloud
 
 def get_df(file_name,user_id):
     columns = ['comment', 'date_time', 'color','size', 'thumb_up', 'thumb_down', 'prod_eval', 'prod', 'brand']
-    df = pd.read_json(file_name).transpose().reset_index().drop('index', axis=1)
-    df = df.set_axis(columns, axis = 'columns')
+    
+    if os.path.isfile(f'./df/{user_id}.csv'):
+        os.remove(f'./df/{user_id}.csv')
+
+    try:
+        df = pd.read_json(file_name).transpose().reset_index().drop('index', axis=1)
+    except:
+        return
+    if df.empty or len(df) < 29 :
+        return
+
+    df = df.set_axis(columns, axis = 'columns')   
 
     # нужно обновить стоп-слова, добавив как миниму то, что в облаке. Сейчас использую стоп-слова NLTK, 
     # но стоит сравнить с другими
@@ -36,8 +46,7 @@ def get_df(file_name,user_id):
     df['lemma_comment'] = df['lemma_comment'].map(lambda x: clean_text(x,russian_stopwords))
     df = df.drop(df[df['lemma_comment']==''].index)
     df = df.reset_index(drop = True)
-    if os.path.isfile(f'./df/{user_id}.csv'):
-        os.remove(f'./df/{user_id}.csv')
+    
     
     df.to_csv(f'./df/{user_id}.csv',index=False)
 

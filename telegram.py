@@ -98,12 +98,12 @@ async def handle_link(message):
                 file_name = f'./input/file_{sku_html}_{user_id}_{message_id}.jl'
                 
                 parser(final_link, file_name)
-                text = FINAL_TEXT %user_name
+                text = FINAL_TEXT
                 await bot.send_message(chat_id, text)
             
                 get_df(file_name,user_id)
                 if not os.path.isfile(f'./df/{user_id}.csv'):
-                    text = SMALL_COMMENTS
+                    text = SMALL_COMMENTS  %user_name
                     logging.info(f'{user_name, user_id} semd link with small count of comments')
                     await message.reply(text)
                 else:
