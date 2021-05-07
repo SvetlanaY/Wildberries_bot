@@ -96,6 +96,6 @@ def similar_comments(word,nlp,user_id):
     res = list(res['comment'])
     
     if len(res)>0:
-        return '. '.join(res)
+        return '\n'.join(res)
     else: 
         return "По вашему запросу совпадений не найдено"
