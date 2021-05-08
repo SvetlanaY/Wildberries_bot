@@ -73,8 +73,8 @@ def tf_idf(preprocessed_comments):
                     dict(tfidf), orient='index')
       tfidf.columns = ['tfidf']
       res = pd.DataFrame(tfidf.sort_values(by=['tfidf'], ascending=True).head(5))
-      res = ', '.join(res.index)
-      return res
+     # res = ', '.join(res.index)
+      return res.index
    except:
       return 'Мало комментариев'   
 
@@ -97,5 +97,6 @@ def similar_comments(word,nlp,user_id):
     
     if len(res)>0:
         return '\n'.join(res)
+       
     else: 
         return "По вашему запросу совпадений не найдено"
