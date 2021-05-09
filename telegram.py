@@ -10,6 +10,10 @@ import math
 from static_text import (HELLO_TEXT, NOT_TARGET_CONTENT_TYPES, NOT_TARGET_TEXT, NOT_RESPONSE_LINK,
                          NOT_TARGET_TEXT_LINK, WAITING_TEXT, FINAL_TEXT, HELP_TEXT, SMALL_COMMENTS)
 
+from aiogram.types import InlineKeyboardMarkup,InlineKeyboardButton
+
+
+
 # Comfigure logging
 logging.basicConfig(level = logging.INFO)
 
@@ -113,7 +117,13 @@ async def handle_link(message):
                     await bot.send_photo(chat_id, photo=open(output_name,'rb'))
 
                     text = tf_idf(preprocessed_comments)
-                    await bot.send_message(chat_id, text)
+
+                    buttons = []
+                    for i in range(len(text)):
+                        buttons.append(InlineKeyboardButton(text[i], callback_data=f'top_{text[i]}'))                    
+                    markup3=InlineKeyboardMarkup(row_width = 1)
+                    markup3.add(*buttons) 
+                    await message.answer('Нажмите на слово или напишите свой запрос',reply_markup=markup3) 
                 
         else:
             text = NOT_TARGET_TEXT_LINK %user_name
@@ -126,15 +136,17 @@ async def handle_link(message):
         word = message.text.lower()
         logging.info(f'{user_name, user_id} send word:{word}')                            
         text = similar_comments(word,nlp,user_id)
-        logging.info(f'{user_name, user_id} receive text:{text}')
+        logging.info(f'{user_name, user_id} receive text:{text}')   
+
         await bot.send_message(chat_id, text)            
+                
                 
    
             #  модель
 
 
         # Define input photo local path
-      #  photo_name = './input/photo_%s_%s.jpg' %(user_id, message_id)
+      #  photo_name = './input/photo_%s_%s.jpg' %(user_id, mezssage_id)
     #    photo = await message.photo[-1].download(photo_name)  # extract photo for further procceses
      #   with open(photo_name, 'rb') as f:
     #        res = requests.post(url, files={'photo': f})
@@ -143,7 +155,17 @@ async def handle_link(message):
      #   await bot.send_message(chat_id,dog_prob)
 
   
-                
+@dp.callback_query_handler(lambda c: c.data and c.data.startswith('top_'))
+async def callback_top(call:types.CallbackQuery):
+    action = call.data.split('_')[1]
+    user_name = call.from_user.first_name   
+    user_id = call.from_user.id
+    logging.info(f'{user_name, user_id} send word:{action}')                            
+    text = similar_comments(action,nlp,user_id)
+    logging.info(f'{user_name, user_id} receive text:{text}')
+    await call.message.answer(text)   
+    await call.answer()
+
      
        
           
