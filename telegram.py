@@ -119,6 +119,8 @@ async def handle_link(message):
                         os.remove(output_name)
 
                     text = tf_idf(preprocessed_comments)
+                    if text[0] != 'Мало комментариев':
+                   
 
                     #buttons = []
                     #for i in range(len(text)):
@@ -126,18 +128,22 @@ async def handle_link(message):
                     #markup1=InlineKeyboardMarkup(row_width = 1)
                     #markup1.add(*buttons) 
                     #await message.answer('Нажмите на слово или напишите свой запрос',reply_markup=markup1)
-
                     
-                    button_1 = KeyboardButton(text[0])
-                    button_2 = KeyboardButton(text[1])
-                    button_3 = KeyboardButton(text[2])
-                    button_4 = KeyboardButton(text[3])
-                    button_5 = KeyboardButton(text[4])
-                    markup = ReplyKeyboardMarkup(row_width = 1, resize_keyboard=True)
-                    markup.add(button_1,button_2,button_3,button_4,button_5)
-                    await message.answer('Нажмите на слово или напишите свой запрос',reply_markup=markup)
+                        buttons_k = []
+                        for i in range(len(text)):
+                            buttons_k.append(KeyboardButton(text[i])) 
+                    
+                    #button_1 = KeyboardButton(text[0])
+                    #button_2 = KeyboardButton(text[1])
+                   # button_3 = KeyboardButton(text[2])
+                    #button_4 = KeyboardButton(text[3])
+                    #button_5 = KeyboardButton(text[4])
+                        markup = ReplyKeyboardMarkup(row_width = 1, resize_keyboard=True)
+                        markup.add(*buttons_k)
+                        await message.answer('Нажмите на слово или напишите свой запрос',reply_markup=markup)
 
-
+                    else:
+                        await bot.send_message(chat_id, text)
 
                     
         else:
