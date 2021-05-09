@@ -10,7 +10,7 @@ import math
 from static_text import (HELLO_TEXT, NOT_TARGET_CONTENT_TYPES, NOT_TARGET_TEXT, NOT_RESPONSE_LINK,
                          NOT_TARGET_TEXT_LINK, WAITING_TEXT, FINAL_TEXT, HELP_TEXT, SMALL_COMMENTS)
 
-from aiogram.types import InlineKeyboardMarkup,InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup,InlineKeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove,KeyboardButton
 
 
 
@@ -115,16 +115,31 @@ async def handle_link(message):
                     output_name=f'./output/plot_{file_name[8:-2]}.jpg'
                     preprocessed_comments = word_cloud_output(file_name,output_name,user_id)           
                     await bot.send_photo(chat_id, photo=open(output_name,'rb'))
+                    if os.path.isfile(output_name):
+                        os.remove(output_name)
 
                     text = tf_idf(preprocessed_comments)
 
-                    buttons = []
-                    for i in range(len(text)):
-                        buttons.append(InlineKeyboardButton(text[i], callback_data=f'top_{text[i]}'))                    
-                    markup3=InlineKeyboardMarkup(row_width = 1)
-                    markup3.add(*buttons) 
-                    await message.answer('Нажмите на слово или напишите свой запрос',reply_markup=markup3) 
-                
+                    #buttons = []
+                    #for i in range(len(text)):
+                    #    buttons.append(InlineKeyboardButton(text[i], callback_data=f'top_{text[i]}'))                    
+                    #markup1=InlineKeyboardMarkup(row_width = 1)
+                    #markup1.add(*buttons) 
+                    #await message.answer('Нажмите на слово или напишите свой запрос',reply_markup=markup1)
+
+                    
+                    button_1 = KeyboardButton(text[0])
+                    button_2 = KeyboardButton(text[1])
+                    button_3 = KeyboardButton(text[2])
+                    button_4 = KeyboardButton(text[3])
+                    button_5 = KeyboardButton(text[4])
+                    markup = ReplyKeyboardMarkup(row_width = 1, resize_keyboard=True)
+                    markup.add(button_1,button_2,button_3,button_4,button_5)
+                    await message.answer('Нажмите на слово или напишите свой запрос',reply_markup=markup)
+
+
+
+                    
         else:
             text = NOT_TARGET_TEXT_LINK %user_name
             await message.reply(text)  
@@ -155,16 +170,16 @@ async def handle_link(message):
      #   await bot.send_message(chat_id,dog_prob)
 
   
-@dp.callback_query_handler(lambda c: c.data and c.data.startswith('top_'))
-async def callback_top(call:types.CallbackQuery):
-    action = call.data.split('_')[1]
-    user_name = call.from_user.first_name   
-    user_id = call.from_user.id
-    logging.info(f'{user_name, user_id} send word:{action}')                            
-    text = similar_comments(action,nlp,user_id)
-    logging.info(f'{user_name, user_id} receive text:{text}')
-    await call.message.answer(text)   
-    await call.answer()
+#@dp.callback_query_handler(lambda c: c.data and c.data.startswith('top_'))
+#async def callback_top(call:types.CallbackQuery):
+##    action = call.data.split('_')[1]
+ #   user_name = call.from_user.first_name   
+ #   user_id = call.from_user.id
+ #   logging.info(f'{user_name, user_id} send word:{action}')                            
+ #   text = similar_comments(action,nlp,user_id)
+ #   logging.info(f'{user_name, user_id} receive text:{text}')
+ #   await call.message.answer(text)   
+ #   await call.answer()
 
      
        
