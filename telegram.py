@@ -2,7 +2,7 @@ import logging
 import os
 import re
 from parser import parser
-from model_base.model_base import get_df,word_cloud_output,tf_idf,similar_comments
+from model_base.model_base import get_df,word_cloud_output,tf_idf,similar_comments_,similar_comments
 import spacy
 import requests
 from aiogram import Bot, Dispatcher, executor, types
@@ -112,14 +112,15 @@ async def handle_link(message):
                     await message.reply(text, reply_markup=ReplyKeyboardRemove())
                    # await message.reply(text)
                 else:
-
+                    text, tf_idf_indexes  = tf_idf(file_name,user_id)
                     output_name=f'./output/plot_{file_name[8:-2]}.jpg'
-                    preprocessed_comments = word_cloud_output(file_name,output_name,user_id)           
+                    word_cloud_output(tf_idf_indexes,output_name)
+                  #  preprocessed_comments = word_cloud_output(file_name,output_name,user_id)           
                     await bot.send_photo(chat_id, photo=open(output_name,'rb'))
                     if os.path.isfile(output_name):
                         os.remove(output_name)
 
-                    text = tf_idf(preprocessed_comments)
+                   
                     if text[0] != 'Мало комментариев':
                    
 
@@ -152,32 +153,30 @@ async def handle_link(message):
             text = NOT_TARGET_TEXT_LINK %user_name
             await message.reply(text)  
     else:
+        
         chat_id = message.chat.id        
         user_name = message.from_user.first_name
         user_id = message.from_user.id      
         message_id = message.message_id          
         word = message.text.lower()
+        # сохраняем датафрейм комментов по топикам
+        similar_comments_(word,nlp,user_id)
+        # первые 10 комментариев
+      #  similar_comments(word,nlp,user_id)
         logging.info(f'{user_name, user_id} send word:{word}')                            
         text = similar_comments(word,nlp,user_id)
         logging.info(f'{user_name, user_id} receive text:{text}')   
 
-        await bot.send_message(chat_id, text)            
+       # await bot.send_message(chat_id, text)   
+        button = InlineKeyboardButton('Показать еще', callback_data=f'sim_{word}')
+        markup2=InlineKeyboardMarkup(row_width = 1)
+        markup2.add(button)
+        await message.answer(text,reply_markup=markup2)        
                 
                 
    
-            #  модель
-
-
-        # Define input photo local path
-      #  photo_name = './input/photo_%s_%s.jpg' %(user_id, mezssage_id)
-    #    photo = await message.photo[-1].download(photo_name)  # extract photo for further procceses
-     #   with open(photo_name, 'rb') as f:
-    #        res = requests.post(url, files={'photo': f})
-     #       dog_prob = res.json()
-
-     #   await bot.send_message(chat_id,dog_prob)
-
-  
+        
+      
 #@dp.callback_query_handler(lambda c: c.data and c.data.startswith('top_'))
 #async def callback_top(call:types.CallbackQuery):
 ##    action = call.data.split('_')[1]
@@ -189,7 +188,17 @@ async def handle_link(message):
  #   await call.message.answer(text)   
  #   await call.answer()
 
-     
+@dp.callback_query_handler(lambda c: c.data and c.data.startswith('sim_'))
+async def callback_top(call:types.CallbackQuery):
+    
+    action = call.data.split('_')[1]
+    user_name = call.from_user.first_name   
+    user_id = call.from_user.id
+    logging.info(f'{user_name, user_id} send word:{action}')                            
+    text = similar_comments(action,nlp,user_id)
+    logging.info(f'{user_name, user_id} receive text:{text}')
+    await call.message.answer(text)   
+   # await call.answer()    
        
           
            

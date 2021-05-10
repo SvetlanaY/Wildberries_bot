@@ -76,6 +76,11 @@ def clean_text(text):
     text = re.sub(r":", " : ", text)
     text = re.sub(r"\s{2,}", " ", text)
     text = emoji_pattern.sub(r'', text)
+
+    text = text.split()
+    text = ' '.join(re.sub("[^А-Яа-яё]",'', i) for i in text)
+    
+    
     #text = " ".join(text.split())
     
     text = delete_non_letters(text)
