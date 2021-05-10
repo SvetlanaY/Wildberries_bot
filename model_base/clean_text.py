@@ -13,11 +13,23 @@ import string
 import time
 
 
+def delete_non_letters(words):
+    new_words = []
+    words = words.split()
+    
+    for word in words:
+        new_word = "".join(c if c.isalpha() else " " for c in word )
+        
+        if new_word != '':
+            new_words.append(new_word)
+    text = ' '.join(c for c in new_words)
+        
+    return text
+
 
 ### Text Normalizing function. Part of the following function was taken from this link. 
-def clean_text(text,russian_stopwords):
+def clean_text(text):
    
-    
     emoji_pattern = re.compile("["
         u"\U0001F600-\U0001F64F"  # emoticons
         u"\U0001F300-\U0001F5FF"  # symbols & pictographs
@@ -36,13 +48,13 @@ def clean_text(text,russian_stopwords):
         u"\u2640-\u2642"
         "]+", flags=re.UNICODE)
 
-    text = text.translate(string.punctuation)
-    text = text.lower().split()
-    text = [w for w in text if not w in russian_stopwords and len(w) >= 3]
-    text = " ".join(text)
-
+    #удаляет пунктуацию
+    #translation_table = str.maketrans("", "", string.punctuation)
+    #text = text.translate(translation_table)   
+    
+    text = text.lower()
     ## Clean the text
-    text = re.sub(r"[,!.\/'+-=)(]", " ", text)
+    text = re.sub(r"[,_»«\*!.\/'+-=)(]", " ", text)
     text = re.sub(r"\'s", " ", text)
     text = re.sub(r",", " ", text)
     text = re.sub(r"\.", " ", text)
@@ -55,13 +67,27 @@ def clean_text(text,russian_stopwords):
     text = re.sub(r"\=", " = ", text)
     text = re.sub(r"\|", " ", text)
     text = re.sub(r"'", " ", text)
+    text = re.sub(r'"', " ", text)
+    text = re.sub(r'«', " ", text)
+    text = re.sub(r'\*', " ", text)
+    text = re.sub(r'\?', " ", text)
+    text = re.sub(r'»', " ", text)
     text = re.sub(r"(\d+)(k)", r"\g<1>000", text)
     text = re.sub(r":", " : ", text)
     text = re.sub(r"\s{2,}", " ", text)
     text = emoji_pattern.sub(r'', text)
-    text = " ".join(text.split())
+    #text = " ".join(text.split())
     
+    text = delete_non_letters(text)
+    
+    return text
 
+
+def delete_stopwords(text,russian_stopwords): 
+    text = text.split()
+    text = [w for w in text if not w in russian_stopwords and len(w) >= 3]
+    text = " ".join(text)
+    
     return text
 
 
