@@ -11,7 +11,7 @@ NOT_TARGET_CONTENT_TYPES = [
 'group_chat_created', 'supergroup_chat_created', 'channel_chat_created',
 'migrate_to_chat_id', 'migrate_from_chat_id', 'pinned_message','media_group'
 ]
-SMALL_COMMENTS = '%s, вы прислали ссылку с маленьким количеством комментариев. Пожалуйста, пришлите другую ссылку, минимальное количество комментариев 30.'
+SMALL_COMMENTS = '%s, вы прислали ссылку с маленьким количеством комментариев. Пожалуйста, пришлите другую ссылку.'
 WAITING_TEXT= 'Пожалуйста, подождите, %s ! После получения списка тем вы можете выбрать одно из слов или отправить свое.'
 
 FINAL_TEXT = 'Поиск наиболее актуальных тем в отзывах.'

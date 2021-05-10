@@ -109,7 +109,8 @@ async def handle_link(message):
                 if not os.path.isfile(f'./df/{user_id}.csv'):
                     text = SMALL_COMMENTS  %user_name
                     logging.info(f'{user_name, user_id} semd link with small count of comments')
-                    await message.reply(text)
+                    await message.reply(text, reply_markup=ReplyKeyboardRemove())
+                   # await message.reply(text)
                 else:
 
                     output_name=f'./output/plot_{file_name[8:-2]}.jpg'
@@ -143,7 +144,8 @@ async def handle_link(message):
                         await message.answer('Нажмите на слово или напишите свой запрос',reply_markup=markup)
 
                     else:
-                        await bot.send_message(chat_id, text)
+                        await message.reply(text, reply_markup=ReplyKeyboardRemove())
+                       # await bot.send_message(chat_id, text)
 
                     
         else:

@@ -63,8 +63,8 @@ def get_df(file_name,user_id):
     tfidf = pd.DataFrame(columns=['tfidf']).from_dict(
                     dict(tfidf), orient='index')
     tfidf.columns = ['tfidf']
-   # tfidf = tfidf.sort_values(by=['tfidf'], ascending=True)
-    tfidf['pos'] = tfidf.index.map(lambda x: pos_define(x))
+    tfidf = tfidf.sort_values(by=['tfidf'], ascending=True)
+   # tfidf['pos'] = tfidf.index.map(lambda x: pos_define(x))
     #tfidf1_res = pd.DataFrame(final_topics(tfidf), columns = ['tfidf'])
 
     #Delete Stopwords. TFIDF once again
@@ -109,16 +109,20 @@ def tf_idf(preprocessed_comments):
                     dict(tfidf), orient='index')
                
       tfidf.columns = ['tfidf']
-      tfidf['pos'] = tfidf.index.map(lambda x: pos_define(x))
+      tfidf = tfidf.sort_values(by=['tfidf'], ascending=True)
+
+      res = pd.DataFrame(final_topics(tfidf), columns = ['tfidf'])
+     # tfidf['pos'] = tfidf.index.map(lambda x: pos_define(x))
       
       #Эти слова показываем пользователю, он вводит то, по чему хочет почитать подробнее, или свое слово
-      res = pd.DataFrame(tfidf[(tfidf['pos']!='V') & (tfidf['pos'] !='ADV')].sort_values(by=['tfidf'], ascending=True).head(5))
-      print(pd.DataFrame(tfidf[(tfidf['pos']!='V') & (tfidf['pos'] !='ADV')].sort_values(by=['tfidf'], ascending=True)))
+     # res = pd.DataFrame(tfidf[(tfidf['pos']!='V') & (tfidf['pos'] !='ADV')].sort_values(by=['tfidf'], ascending=True).head(5))
+    #  print(pd.DataFrame(tfidf[(tfidf['pos']!='V') & (tfidf['pos'] !='ADV')].sort_values(by=['tfidf'], ascending=True)))
       #res = pd.DataFrame(tfidf.sort_values(by=['tfidf'], ascending=True).head(5))
       
       
      # res = ', '.join(res.index)
-      return res.index
+      print(res)
+      return res['tfidf']
    except:
       return 'Мало комментариев'   
 
