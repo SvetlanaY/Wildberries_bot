@@ -48,11 +48,11 @@ async def handle_photo_for_prediction(message):
     text_link = message.text
     text_template = r'wildberries\.ru\/catalog\/\d*'
     result = re.findall(text_template, text_link)
-    
+
 
     if len(result) == 1:
         #final_link = []
-        
+
         final_link = f'https://www.{result[0]}/otzyvy'
 
         if requests.get(''.join(final_link)).status_code != 200:
@@ -69,28 +69,28 @@ async def handle_photo_for_prediction(message):
             #sku из html кода
             sku_html = final_link[35:-7]
             file_name = f'./input/file_{sku_html}_{user_id}_{message_id}.jl'
-            
+
             parser(final_link, file_name)
             text = FINAL_TEXT %user_name
             await bot.send_message(chat_id, text)
-           
+
             get_df(file_name,user_id)
-            
+
             output_name=f'./output/plot_{file_name[8:-2]}jpg'
-            preprocessed_comments = word_cloud_output(file_name,output_name,user_id)           
+            preprocessed_comments = word_cloud_output(file_name,output_name,user_id)
             await bot.send_photo(chat_id, photo=open(output_name,'rb'))
 
             text = tf_idf(preprocessed_comments)
             await bot.send_message(chat_id, text)
-            
-            
-   
+
+
+
 
     else:
                 user_name = message.from_user.first_name
                 text = NOT_TARGET_TEXT_LINK %user_name
                 await message.reply(text)
-       
+
 
 
 @dp.message_handler(content_types=['text'])
@@ -98,8 +98,8 @@ async def handle_photo_for_prediction(message):
                 chat_id = message.chat.id
                 print('ddd')
                 user_name = message.from_user.first_name
-                user_id = message.from_user.id      
-                message_id = message.message_id          
+                user_id = message.from_user.id
+                message_id = message.message_id
                 word = message.text.lower()
                 print(word)
                 # число которое вычитаем заыисит от количества сообщений!!!!
@@ -109,17 +109,17 @@ async def handle_photo_for_prediction(message):
                #     for i in files:
                #         if len(i)>10 and i[-6:-3] == str(message_id-5):
                #             file_name = i
-                #            print(file_name)            
-  
+                #            print(file_name)
+
                 text = similar_comments(word,nlp,user_id)
                 print(text)
                 await bot.send_message(chat_id, text)
-              
-                
-   
-        
 
-           
+
+
+
+
+
 
             #  модель
 
@@ -133,12 +133,12 @@ async def handle_photo_for_prediction(message):
 
      #   await bot.send_message(chat_id,dog_prob)
 
-  
-                
-     
-       
-          
-           
+
+
+
+
+
+
 
 
 
