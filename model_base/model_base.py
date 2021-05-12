@@ -41,6 +41,7 @@ def get_df(file_name,user_id):
     prod_text = clean_text(df['prod'][0])
     brand_text = clean_text(df['brand'][0])
     stopwords_add_by_category = [i for i in brand_text.split()]+[i for i in prod_text.split()]
+    stopwords_add_by_category += lemmatize(stopwords_add_by_category)
     
     russian_stopwords = stopwords.words("russian")
     russian_stopwords.extend(stopwords_add_by_category+SW_list)
@@ -77,6 +78,9 @@ def get_df(file_name,user_id):
     df['lemma_comment_2'] = df['lemma_comment'].map(lambda x: delete_stopwords(x,russian_stopwords))
     df = df.drop(df[df['lemma_comment_2']==''].index)
     df = df.reset_index(drop = True)
+    df['words_count'] = df['lemma_comment_2'].apply(lambda x: len(x.split()))
+    df = df.drop(df[df['words_count']<=3].index).reset_index(drop = True)
+    
        
     df.to_csv(f'./df/{user_id}.csv',index=False)
 

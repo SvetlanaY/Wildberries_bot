@@ -15,7 +15,9 @@ from aiogram.types import InlineKeyboardMarkup,InlineKeyboardButton, ReplyKeyboa
 
 
 # Comfigure logging
-logging.basicConfig(level = logging.INFO)
+#logging.basicConfig(level = logging.INFO)
+logging.basicConfig(filename='app.log',level = logging.INFO, filemode='w')
+
 
 # Make sure that you got telegram api token from BotFather
 # перенести в энв!!!
