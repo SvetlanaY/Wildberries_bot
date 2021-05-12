@@ -3,7 +3,7 @@ requests
 scrapy
 spacy
 pandas
-matplotlib
+matplot
 numpy
 nltk
 pymystem3
