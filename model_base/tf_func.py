@@ -12,9 +12,9 @@ def pos_define(x):
 def final_topics(df):
     final_topics = []
     for x in df.index:
-        if len(final_topics)<5:
-            if (pos_define(x) not in ['V','ADV']) and (x not in final_topics):
-                
+        if len(final_topics) < 5:
+            if (pos_define(x) not in ['V', 'ADV']) and (x not in final_topics):
                 final_topics.append(x)
-        else: break
+        else:
+            break
     return final_topics
