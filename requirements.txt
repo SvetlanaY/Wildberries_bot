@@ -1,0 +1,15 @@
+aiogram
+requests
+scrapy
+spacy
+pandas
+matplot
+numpy
+nltk
+pymystem3
+wordcloud
+sklearn
+pillow
+sklearn
+keras
+tensorflow
