@@ -13,9 +13,10 @@ from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
 
 from model_base.model_base import (get_df, similar_comments, similar_comments_,
                                    tf_idf, word_cloud_output)
-from static_text import (FINAL_TEXT, HELLO_TEXT, HELP_TEXT, NOT_RESPONSE_LINK,
-                         NOT_TARGET_CONTENT_TYPES, NOT_TARGET_TEXT, CHANGE_QUERY_TEXT,
-                         NOT_TARGET_TEXT_LINK, SMALL_COMMENTS, WAITING_TEXT)
+from static_text import (CHANGE_QUERY_TEXT, FINAL_TEXT, HELLO_TEXT, HELP_TEXT,
+                         NOT_RESPONSE_LINK, NOT_TARGET_CONTENT_TYPES,
+                         NOT_TARGET_TEXT, NOT_TARGET_TEXT_LINK, SMALL_COMMENTS,
+                         WAITING_TEXT)
 
 # Comfigure logging
 # logging.basicConfig(level = logging.INFO)

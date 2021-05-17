@@ -12,7 +12,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from tensorflow.python.ops.gen_array_ops import Empty
 from wordcloud import WordCloud
 
-from ..static_text. import CHANGE_QUERY_TEXT
 from .clean_text import clean_text, delete_stopwords, lemmatize
 from .sentiment_model import preprocessing_for_sent, sentiment_calculation
 from .tf_func import final_topics
@@ -21,7 +20,7 @@ nltk.download(('stopwords'))
 
 
 model = load_model('model_base/sentimen_model_full', compile=False)
-
+CHANGE_QUERY_TEXT = "К сожалению, мы ничего не нашли по твоему запросу, попробуй изменить тему или тональность отзывов"
 
 def get_df(file_name, user_id):
     columns = [
@@ -54,7 +53,7 @@ def get_df(file_name, user_id):
     stopwords_add_by_category = [
         i for i in brand_text.split()] + [i for i in prod_text.split()]
     stopwords_add_by_category += lemmatize(stopwords_add_by_category)
-    russian_stopwords = stopwords.words("russian")S
+    russian_stopwords = stopwords.words("russian")
     russian_stopwords.extend(stopwords_add_by_category + SW_list)
 
     df['cleaned_comment'] = df['comment'].map(lambda x: clean_text(x))
