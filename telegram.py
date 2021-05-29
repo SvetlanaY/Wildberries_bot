@@ -173,20 +173,10 @@ async def callback_sent(call: types.CallbackQuery):
     user_name = call.from_user.first_name
     user_id = call.from_user.id
     logging.info(f'{user_name, user_id} send word:{action}')
-    text = similar_comments(action, nlp, user_id)
+    text = similar_comments(action, user_id)
     logging.info(f'{user_name, user_id} receive text:{text}')
     await call.message.answer(text)
 
-
-@dp.callback_query_handler(lambda c: c.data and c.data.startswith('sim_'))
-async def callback_top(call: types.CallbackQuery):
-    action = call.data.split('_')[1]
-    user_name = call.from_user.first_name
-    user_id = call.from_user.id
-    logging.info(f'{user_name, user_id} send word:{action}')
-    text = similar_comments(action, nlp, user_id)
-    logging.info(f'{user_name, user_id} receive text:{text}')
-    await call.message.answer(text)
 
 
 if __name__ == '__main__':
