@@ -227,8 +227,8 @@ def similar_comments_(word, nlp, user_id):
         res = sentiment_calculation(res, preprocessing_for_sent(res), model)
         res['sentiment'] = res['comment']
     else:
-        critical_similarity_value = 0.47
-        word_for_checking = nlp(word)
+        critical_similarity_value = 0.47        
+        word_for_checking = nlp(word)  
         similarities = []
         for i in range(len(df['lemma_comment_2'])):
             similarities.append(
@@ -243,16 +243,15 @@ def similar_comments_(word, nlp, user_id):
             by=f'similarity_to_{word_for_checking}',
             ascending=False)
 
-        res = pd.DataFrame(df_temp[df_temp[f'similarity_to_{word_for_checking}'] > critical_similarity_value][[
-                           'comment', f'similarity_to_{word_for_checking}']])
+        result = pd.DataFrame(df_temp[df_temp[f'similarity_to_{word_for_checking}'] > critical_similarity_value][[
+                           'comment', f'similarity_to_{word_for_checking}']])      
 
-        if preprocessing_for_sent(res) == 1:
+        if preprocessing_for_sent(result) is 'No valid comments':            
             return
 
-        sen_pred = model.predict(preprocessing_for_sent(res))
-        res = sentiment_calculation(res, preprocessing_for_sent(res), model)
+        res = sentiment_calculation(result, preprocessing_for_sent(result), model)        
 
-    if len(res) > 0:
+    if res and len(res) > 0:
         if os.path.isfile(f'./similarity/{user_id}_{word}.csv'):
             os.remove(f'./similarity/{user_id}_{word}.csv')
 
@@ -261,7 +260,7 @@ def similar_comments_(word, nlp, user_id):
         return
 
 
-def similar_comments(word, nlp, user_id):
+def similar_comments(word, user_id):
     word_s = word[:-1]
     sent = word[-1]
 
@@ -273,7 +272,6 @@ def similar_comments(word, nlp, user_id):
             sentiment = 'Positive'
         if sent == 'n':
             sentiment = 'Negative'
-
         if sent != 'a':
             similar = similar[similar['Predicted_sent'] == sentiment]
 
