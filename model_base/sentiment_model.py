@@ -13,18 +13,19 @@ def preprocessing_for_sent(df):
     with comments prepared for model'''
     wn_lemmatizer = WordNetLemmatizer()
     lemmatized_text_for_sen = []
-    for comment in df['comment']:
-        print(wn_lemmatizer.lemmatize('венчик'))
+    for comment in df['comment']:        
         lemmatized_text_for_sen.append(
             ' '.join([wn_lemmatizer.lemmatize(word)
                       for word in comment.split()]))
     if lemmatized_text_for_sen == []:
-        return 1
+        return 'No valid comments'
     for i in range(len(lemmatized_text_for_sen)):
         lemmatized_text_for_sen[i] = word_tokenize(lemmatized_text_for_sen[i])
     clean_tokenized_comment = []
     for i, element in enumerate(lemmatized_text_for_sen):
         clean_tokenized_comment.append(' '.join([word for word in element]))
+    if clean_tokenized_comment == []:
+        return 'No valid comments'
     return pd.Series(clean_tokenized_comment)
 
 
@@ -40,9 +41,11 @@ def sentiment_calculation(df, series, model):
     Neutral in other case is_equal_sent - check whether Origianl
     sentiment is equal to predicted
     '''
-
-    sen_pred = model.predict(series)
-    df['Predicted_sent'] = np.where(
-        sen_pred >= 0.6, 'Positive', np.where(
+    try:
+        sen_pred = model.predict(series)
+        df['Predicted_sent'] = np.where(
+            sen_pred >= 0.6, 'Positive', np.where(
             sen_pred <= 0.4, 'Negative', 'Neutral'))
-    return df
+        return df
+    except:
+        return
