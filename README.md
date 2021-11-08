@@ -41,16 +41,16 @@
 Предобучение модели на датасете kaggle  
 
 # Структура репозитория
-telegram.py  
+### telegram.py  
 Бот с основным алгоритмом  
 
-wildberries/wildberries/spiders/wildberries.py  
+### wildberries/wildberries/spiders/wildberries.py  
 Парсинг  
 
-model_base/model_base.py  
+### model_base/model_base.py  
 Модель кластеризации и тональности  
 
-StopWords_extension.csv  
+### StopWords_extension.csv  
 Расширенный список стоп-слов  
 
 # Команда
