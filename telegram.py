@@ -18,16 +18,14 @@ from static_text import (CHANGE_QUERY_TEXT, FINAL_TEXT, HELLO_TEXT, HELP_TEXT,
                          NOT_TARGET_TEXT, NOT_TARGET_TEXT_LINK, SMALL_COMMENTS,
                          WAITING_TEXT)
 
-# Comfigure logging
-# logging.basicConfig(level = logging.INFO)
+
 logging.basicConfig(filename='app.log', level=logging.INFO, filemode='w')
 
 
-# Make sure that you got telegram api token from BotFather
-# перенести в энв!!!
 
-TOKEN = '1740386855:AAHgxBqSAaCalAOh0j1K0Afhd1hsi-4qrqc'
-# TOKEN = os.getenv('TOKEN_API_DS_BOT')
+
+
+TOKEN = os.getenv('TOKEN_API_DS_BOT')
 
 
 # Initialize bot and dispetcher
